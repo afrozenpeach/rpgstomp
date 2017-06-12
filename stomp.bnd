@@ -1,0 +1,78 @@
+     /*
+       Copyleft (c) 2011 Mihael Schmidt
+
+       This file is part of stomp.
+
+       stomp is free software: you can redistribute it and/or modify it under
+       the terms of the GNU Lesser General Public License as published by
+       the Free Software Foundation, either version 3 of the License, or
+       any later version.
+
+       stomp is distributed in the hope that it will be useful,
+       but WITHOUT ANY WARRANTY; without even the implied warranty of
+       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+       GNU Lesser General Public License for more details.
+
+       You should have received a copy of the GNU Lesser General Public
+       License along with stomp.  If not, see http://www.gnu.org/licenses/.
+      */
+
+STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('stomp 1.0.0')
+
+    EXPORT SYMBOL('stomp_create')
+    EXPORT SYMBOL('stomp_open')
+    EXPORT SYMBOL('stomp_close')
+    EXPORT SYMBOL('stomp_finalize')
+    EXPORT SYMBOL('stomp_sendFrame')
+    EXPORT SYMBOL('stomp_receiveFrame')
+    EXPORT SYMBOL('stomp_setTimeout')
+    EXPORT SYMBOL('stomp_setClientId')
+    EXPORT SYMBOL('stomp_setAckMode')
+    EXPORT SYMBOL('stomp_getSessionId')
+    EXPORT SYMBOL('stomp_setDurableSubscriberName')
+    EXPORT SYMBOL('stomp_setPersistMessages')
+    EXPORT SYMBOL('stomp_getExtension')
+    EXPORT SYMBOL('stomp_setExtension')
+    EXPORT SYMBOL('stomp_setExtensionByName')
+    EXPORT SYMBOL('stomp_useReceipts')
+    EXPORT SYMBOL('stomp_isUsingReceipts')
+    EXPORT SYMBOL('stomp_getOptionValue')
+    EXPORT SYMBOL('stomp_hasOption')
+    EXPORT SYMBOL('stomp_setSessionId')
+    EXPORT SYMBOL('stomp_addOpenReceipt')
+    EXPORT SYMBOL('stomp_getNumberOfOpenReceipts')
+    EXPORT SYMBOL('stomp_command_connect')
+    EXPORT SYMBOL('stomp_command_disconnect')
+    EXPORT SYMBOL('stomp_command_send')
+    EXPORT SYMBOL('stomp_command_subscribe')
+    EXPORT SYMBOL('stomp_command_unsubscribe')
+    EXPORT SYMBOL('stomp_ext_create')
+    EXPORT SYMBOL('stomp_ext_getId')
+    EXPORT SYMBOL('stomp_ext_connect')
+    EXPORT SYMBOL('stomp_ext_send')
+    EXPORT SYMBOL('stomp_ext_disconnect')
+    EXPORT SYMBOL('stomp_ext_subscribe')
+    EXPORT SYMBOL('stomp_ext_unsubscribe')
+    EXPORT SYMBOL('stomp_ext_finalize')
+    EXPORT SYMBOL('stomp_ext_activemq_create')
+    EXPORT SYMBOL('stomp_ext_activemq_connect')
+    EXPORT SYMBOL('stomp_ext_activemq_send')
+    EXPORT SYMBOL('stomp_ext_activemq_disconnect')
+    EXPORT SYMBOL('stomp_ext_activemq_subscribe')
+    EXPORT SYMBOL('stomp_ext_activemq_unsubscribe')
+    EXPORT SYMBOL('stomp_ext_activemq_finalize')
+    EXPORT SYMBOL('stomp_frame_create')
+    EXPORT SYMBOL('stomp_frame_finalize')
+    EXPORT SYMBOL('stomp_frame_setHeader')
+    EXPORT SYMBOL('stomp_frame_getHeader')
+    EXPORT SYMBOL('stomp_frame_listHeaders')
+    EXPORT SYMBOL('stomp_frame_removeHeader')
+    EXPORT SYMBOL('stomp_frame_setCommand')
+    EXPORT SYMBOL('stomp_frame_getCommand')
+    EXPORT SYMBOL('stomp_frame_setBody')
+    EXPORT SYMBOL('stomp_frame_getBody')
+    EXPORT SYMBOL('stomp_frame_toString')
+    EXPORT SYMBOL('stomp_frame_containsHeader')
+    EXPORT SYMBOL('stomp_frame_dump')
+
+ENDPGMEXP
