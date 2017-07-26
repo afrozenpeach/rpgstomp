@@ -1,33 +1,33 @@
 **FREE
 
 ///
-// Stomp : Utilities module
-//
+// STOMP : Utilities module
 //
 // \author Mihael Schmidt
-// \date   18.04.2011
+// \date   26.07.2017
 ///
 
-//---------------------------------------------------------------------------------------------
-//
-// (C) Copyleft 2011 Mihael Schmidt
-//
-// This file is part of STOMP project and service program.
-//
-// STOMP is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// any later version.
-//
-// STOMP is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with STOMP.  If not, see <http://www.gnu.org/licenses/>.
-//
-//---------------------------------------------------------------------------------------------
+//                          The MIT License (MIT)
+// 
+// Copyright (c) 2017 Mihael Schmidt
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy 
+// of this software and associated documentation files (the "Software"), to deal 
+// in the Software without restriction, including without limitation the rights 
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+// copies of the Software, and to permit persons to whom the Software is 
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+// SOFTWARE.
 
 ctl-opt nomain;
 
@@ -36,11 +36,7 @@ ctl-opt nomain;
 //
 /include 'iconv_h.rpgle'
 /include 'stomputil_h.rpgle'
-/include 'filedesc_h.rpgle'
-/include 'socket_h.rpgle'
 /include 'message/message_h.rpgle'
-/include 'libc_h.rpgle'
-/include 'errno_h.rpgle'
 
 
 //
@@ -235,103 +231,5 @@ dcl-proc translateFromUtf8 export;
   endif;
 
   iconv_close(iconv_table);
-end-proc;
-
-
-dcl-proc non_blocking_receive export;
-  dcl-pi *N int(10);
-    socket int(10);
-    buffer pointer;
-    size uns(10) const;
-    timeout likeds(timeout_t);
-  end-pi;
-  
-  dcl-s readset like(fdset);
-  dcl-s rc int(10);
-  dcl-s err int(10) based(p_err);
-
-  p_err = c__errno();
- 
-  rc = recv(socket : buffer: size: 0);
-  if (rc <> -1);
-    return rc;
-  endif;
- 
-  if (err <> EWOULDBLOCK);
-    return rc;
-  endif;
- 
-  // -----------------------------------
-  //  Wait until socket is readable
-  // -----------------------------------
- 
-  filedesc_clearInit(readset);
-  filedesc_set(socket : readset);
- 
-  rc = select( socket + 1          // descriptor count    ??? is this correct ???
-             : %addr(readset)      // read set
-             : *null               // write set
-             : *null               // exception set
-             : %addr(timeout) );   // timeout
-  select;
-    when rc = 0;
-      err = ETIME;
-      return -1;
-    when rc = -1;
-      return -1;
-    when rc > 0;
-      return recv(socket : buffer : size : 0);
-  endsl;
- 
-  return -1;
-end-proc;
-
-
-dcl-proc non_blocking_send export;
-  dcl-pi *N int(10);
-    socket int(10);
-    buffer pointer;
-    size uns(10) const;
-    timeout likeds(timeout_t);
-  end-pi;
-
-  dcl-s writeset like(fdset);
-  dcl-s rc int(10);
-  dcl-s err int(10) based(p_err);
-
-  p_err = c__errno();
-  
-  rc = recv(socket : buffer: size: 0);
-  if (rc <> -1);
-    return rc;
-  endif;
-  
-  if (err <> EWOULDBLOCK);
-    return rc;
-  endif;
-  
-  // -----------------------------------
-  //  Wait until socket is readable
-  // -----------------------------------
-  
-  filedesc_clearInit(writeset);
-  filedesc_set(socket : writeset);
-  
-  rc = select( socket + 1         // descriptor count    ??? is this correct ???
-             : *null              // read set
-             : %addr(writeset)    // write set
-             : *null              // exception set
-             : %addr(timeout) );  // timeout
-  select;
-    when rc = 0;
-      err = ETIME;
-      return -1;
-    when rc = -1;
-      return -1;
-    when rc > 0;
-      return send(socket : buffer : size : 0);
-  endsl;
- 
-  return -1;
 end-proc;
  

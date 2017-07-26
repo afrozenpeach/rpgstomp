@@ -7,17 +7,12 @@
 // sends one message to the topic "retailprice".
 //
 // \author Mihael Schmidt
-// \date 11.06.2017
+// \date 26.07.2017
 ///
 
 
 ctl-opt dftactgrp(*no) actgrp(*caller) main(main);
 
-
-//
-// Prototypes
-//
-dcl-pr main extpgm('STOMP02') end-pr;
 
 /include 'stomp/stomp_h.rpgle'
 
@@ -45,7 +40,7 @@ dcl-proc main;
   
     dsply 'network connection established';
   
-    if (stomp_command_connect(client : 'mihael' : 'xxyyzz'));
+    if (stomp_command_connect(client : 'user' : 'pass'));
   
       dsp = 'Session: ' + stomp_getSessionId(client);
       dsply dsp;

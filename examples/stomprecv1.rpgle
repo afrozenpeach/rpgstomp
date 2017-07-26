@@ -7,9 +7,9 @@
       * stomprecv1@localhost.com.
       *
       * \author Mihael Schmidt
-      * \date   26.04.2011
+      * \date   26.07.2017
       */
-
+     
 
       *-------------------------------------------------------------------------
       * PEP
@@ -23,7 +23,6 @@
       *-------------------------------------------------------------------------
       /include QLOG4RPG,PLOG4RPG
       /include 'stomp/stomp_h.rpgle'
-      /include 'message_h.rpgle'
 
 
       *-------------------------------------------------------------------------
@@ -44,15 +43,12 @@
          //     'mbr:*LIBL/LOGGING.LOGSTOMPRC');
 
          // set up stomp client
-         client = stomp_create('127.0.0.1' : 61612);
+         client = stomp_create('server.com' : 61613);
          stomp_setClientId(client : 'stomprecv1@localhost.com');
          stomp_setDurableSubscriberName(client : 'stomprecv1@localhost.com');
          stomp_setTimeout(client : 3600000);
 
          stomp_setAckMode(client : STOMP_ACK_MODE_CLIENT);
-
-         extension = stomp_ext_activemq_create();
-         stomp_setExtension(client : extension);
 
          stomp_useReceipts(client : *on);
 
@@ -61,9 +57,9 @@
 
          dsply 'network connection established';
 
-         if (stomp_command_connect(client : 'guest' : 'password'));
+         if (stomp_command_connect(client : 'user' : 'pass'));
 
-           stomp_command_subscribe(client : '/topic/retailprice');
+           stomp_command_subscribe(client : '/queue/retailprice');
 
            dow (running);
 

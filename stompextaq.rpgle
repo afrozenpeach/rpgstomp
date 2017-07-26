@@ -6,39 +6,39 @@
 // This module changes the frames so that they are compatible with ActiveMQ.
 // ActiveMQ expects certain headers for durable topic subscriptions.
 // <br><br>
-// Log entries will be written via the logger <em>de.rpgng.stomp.ext.activemq</em>.
-// There is no appender configured for this logger. Feel free to add log appenders
-// for this logger.
+// Log entries will be written via the logger <em>rpgnextgen.stomp.ext.activemq</em>.
+// There is no preconfigured appender for this logger. Feel free to add log 
+// appenders for this logger.
 //
 // \author Mihael Schmidt
-// \date   01.06.2011
-//
+// \date   26.07.2017
+// \project STOMP
 // \link http://activemq.apache.org/stomp.html ActiveMQ Stomp
 ///
 
-//---------------------------------------------------------------------------------------------
-//
-// (C) Copyleft 2011 Mihael Schmidt
-//
-// This file is part of STOMP project and service program.
-//
-// STOMP is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// any later version.
-//
-// STOMP is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with STOMP.  If not, see <http://www.gnu.org/licenses/>.
-//
-//---------------------------------------------------------------------------------------------
+//                          The MIT License (MIT)
+// 
+// Copyright (c) 2017 Mihael Schmidt
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy 
+// of this software and associated documentation files (the "Software"), to deal 
+// in the Software without restriction, including without limitation the rights 
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+// copies of the Software, and to permit persons to whom the Software is 
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+// SOFTWARE.
 
 ctl-opt nomain;
-
 
 //
 // Prototypes
@@ -49,7 +49,7 @@ ctl-opt nomain;
 
 
 //
-// Constants
+// STOMP ActiveMQ Extension Id
 //
 dcl-c ID 'STOMP_EXT_ACTIVEMQ';
 
@@ -70,7 +70,6 @@ dcl-s logger pointer;
 // Procedures
 //
 
-
 dcl-proc stomp_ext_activemq_create export;
   dcl-pi *N pointer;
     userdata pointer const options(*nopass : *string);
@@ -90,7 +89,7 @@ dcl-proc stomp_ext_activemq_create export;
   header.proc_finalize = %paddr('stomp_ext_activemq_finalize');
   
   if (logger = *null);
-    logger = Logger_getLogger('com.rpgnextgen.stomp.ext.activemq');
+    logger = Logger_getLogger('rpgnextgen.stomp.ext.activemq');
   endif;
   
   Logger_info(logger : 'created stomp extension ' + ID);

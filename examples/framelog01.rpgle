@@ -51,13 +51,13 @@
        Appender_setLayout(hAppender: hLayout);
        
        // configure main logger
-       hLogger = Logger_getLogger('de.rpgng.stomp');
+       hLogger = Logger_getLogger('rpgnextgen.stomp');
        Logger_setLevel(hLogger: cLOG4RPG_LEVEL_DEBUG);
        Logger_addAppender(hLogger: hAppender);
        
        // use own logger for this program
-       // (falls back to de.rpgng.stomp as this one is not configured)
-       hLogger = Logger_getLogger('de.rpgng.stomp.framelog');
+       // (falls back to rpgnextgen.stomp as this one is not configured)
+       hLogger = Logger_getLogger('rpgnextgen.stomp.framelog');
        Logger_info( hLogger : 'Starting example FRAMELOG01 ...');
 
 

@@ -1,0 +1,87 @@
+#!/QOpenSys/usr/bin/sh
+export PWD=$(pwd)
+
+MODULES="STOMP STOMPCMD STOMPFRAME STOMPPARSE STOMPEXT STOMPUTIL STOMPEXTAQ"
+
+
+#
+# set the target lib to OSSILE if nothing else is specified
+#
+if [[ $TARGET_LIB == "" ]] ; then
+  TARGET_LIB=OSSILE
+fi
+
+
+#
+# compilation steps
+#
+for MODULE in $MODULES
+do
+  STREAMFILE=$(echo $MODULE | tr '[:upper:]' '[:lower:]')
+  STREAMFILE=$STREAMFILE.rpgle
+
+  if [ -e /QSYS.LIB/$TARGET_LIB.LIB/$MODULE.MODULE ] ; then
+    system -kpieb "DLTOBJ OBJ($TARGET_LIB/$MODULE) OBJTYPE(*MODULE)"
+  fi
+  system -kpieb "CRTRPGMOD $TARGET_LIB/$MODULE SRCSTMF('$STREAMFILE') INCDIR('$INCDIR') OPTION(*SRCSTMT) DBGVIEW(*LIST) OPTIMIZE(*BASIC) STGMDL(*INHERIT)"
+
+done
+
+
+#
+# binding
+#
+if [ -e /QSYS.LIB/$TARGET_LIB.LIB/STOMP.FILE ] ; then
+  system -kpieb "DLTOBJ OBJ($TARGET_LIB/STOMP) OBJTYPE(*FILE)"
+fi
+system -kpieb "CRTSRCPF FILE($TARGET_LIB/STOMP) RCDLEN(112)"
+system -kpieb "CPYFRMSTMF FROMSTMF('$PWD/stomp.bnd') TOMBR('/QSYS.LIB/$TARGET_LIB.LIB/STOMP.FILE/STOMP.MBR') MBROPT(*REPLACE)"
+
+if [ -e /QSYS.LIB/$TARGET_LIB.LIB/STOMP.SRVPGM ] ; then
+  system -kpieb "DLTOBJ OBJ($TARGET_LIB/STOMP) OBJTYPE(*SRVPGM)"
+fi
+system -kpieb "CRTSRVPGM $TARGET_LIB/STOMP MODULE($TARGET_LIB/STOMP $TARGET_LIB/STOMPCMD $TARGET_LIB/STOMPFRAME $TARGET_LIB/STOMPPARSE $TARGET_LIB/STOMPUTIL $TARGET_LIB/STOMPEXT $TARGET_LIB/STOMPEXTAQ) STGMDL(*INHERIT) BNDSRVPGM($TARGET_LIB/MESSAGE $TARGET_LIB/LLIST $TARGET_LIB/LIBTREE $TARGET_LIB/REFLECTION $TARGET_LIB/LOG4RPG) EXPORT(*SRCFILE) SRCFILE($TARGET_LIB/STOMP) TEXT('STOMP Client')"
+
+
+#
+# cleanup
+#
+if [ -e /QSYS.LIB/$TARGET_LIB.LIB/STOMP.FILE ] ; then
+  system -kpieb "DLTOBJ OBJ($TARGET_LIB/STOMP) OBJTYPE(*FILE)"
+fi
+for MODULE in $MODULES
+do
+  if [ -e /QSYS.LIB/$TARGET_LIB.LIB/$MODULE.MODULE ] ; then
+    system -kpieb "DLTOBJ OBJ($TARGET_LIB/$MODULE) OBJTYPE(*MODULE)"
+  fi
+done
+
+
+#
+# check if service program has been created
+#
+if [ ! -e /QSYS.LIB/$TARGET_LIB.LIB/STOMP.SRVPGM ] ; then
+  exit 5
+fi
+
+
+#
+# copy copybook to OSSILE include directory if is is specified and does exist
+#
+if [[ $INCDIR != "" ]] ; then
+  if [[ ! -e $INCDIR ]] ; then
+    echo "include directory $INCDIR does not exist"
+  else
+    
+    if [ ! -e $INCDIR/stomp ] ; then
+      mkdir $INCDIR/stomp
+    fi
+    
+    cp $PWD/stomp_h.rpgle        $INCDIR/stomp/
+    cp $PWD/stompcmd_h.rpgle     $INCDIR/stomp/
+    cp $PWD/stompext_amq_h.rpgle $INCDIR/stomp/
+    cp $PWD/stompext_h.rpgle     $INCDIR/stomp/
+    cp $PWD/stompframe_h.rpgle   $INCDIR/stomp/
+    
+  fi
+fi

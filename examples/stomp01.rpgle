@@ -5,7 +5,7 @@
       * sends one message to the topic "retailprice".
       *
       * \author Mihael Schmidt
-      * \date   14.04.2011
+      * \date   26.07.2017
       */
 
 
@@ -21,7 +21,6 @@
       * Prototypen
       *-------------------------------------------------------------------------
       /include 'stomp/stomp_h.rpgle'
-      /include 'message_h.rpgle'
 
 
       *-------------------------------------------------------------------------
