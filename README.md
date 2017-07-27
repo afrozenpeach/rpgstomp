@@ -126,7 +126,7 @@ This software package has the following dependencies:
 - [Linked List](https://bitbucket.org/m1hael/llist)
 - [libtree](https://bitbucket.org/m1hael/libtree)
 - [Reflection](https://bitbucket.org/m1hael/reflection)
-- [Log4RPG]()
+- [Log4RPG](http://tools400.de/Deutsch/Freeware/Service-Pgme/Log4rpg/log4rpg.html)
 
 ## Documentation
 
@@ -135,6 +135,5 @@ hosted at rpgnextgen.com.
 
 ## Links
 
-- [Log4RPG]()
 - [ActiveMQ](https://activemq.apache.org)
 - [STOMP](https://github.com/stomp/stomp-spec)
