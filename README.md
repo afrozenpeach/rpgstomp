@@ -1,4 +1,4 @@
-# STOMP Client in RPG
+# STOMP Client for RPG
 
 ## About
 From the former STOMP web site (at codehaus.org):
@@ -122,16 +122,15 @@ or
 
 This software package has the following dependencies:
 
-- Message
-- Includes
-- Linked List
-- libtree
-- Reflection
-- Log4RPG
+- [Message](https://bitbucket.org/m1hael/message)
+- [Linked List](https://bitbucket.org/m1hael/llist)
+- [libtree](https://bitbucket.org/m1hael/libtree)
+- [Reflection](https://bitbucket.org/m1hael/reflection)
+- [Log4RPG]()
 
 ## Documentation
 
-The API documentation will be available at [ILEDocs](http://iledocs.rpgnextgen.com) 
+The API documentation is be available at [ILEDocs](http://iledocs.rpgnextgen.com) 
 hosted at rpgnextgen.com.
 
 ## Links

@@ -33,7 +33,7 @@ end-pr;
 
 /include 'stompext_h.rpgle'
 /include 'message/message_h.rpgle'
-/include 'reflection_h.rpgle'
+/include 'reflection/reflection_h.rpgle'
 
 
 //

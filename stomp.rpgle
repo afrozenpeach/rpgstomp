@@ -58,7 +58,7 @@ end-pr;
 /include 'libc_h.rpgle'
 /include 'errno_h.rpgle'
 /include 'libtree/libtree_h.rpgle'
-/include 'llist_h.rpgle'
+/include 'llist/llist_h.rpgle'
 
 
 //
