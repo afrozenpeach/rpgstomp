@@ -101,8 +101,6 @@ dcl-proc stomp_create export;
   header.openReceipts = list_create();
   header.bufferedFrames = list_create();
  
-  stomp_setTimeout(ptr : 500); // as a default
- 
   header.socket = socket(AF_INET : SOCK_STREAM : PROTOCOL_DEFAULT);
   if (header.socket = -1);
     errPtr = errno();
@@ -129,7 +127,7 @@ dcl-proc stomp_open export;
   dcl-ds socket_address_inet likeds(socket_address_inet_t);
   dcl-s c_err int(10) based(errPtr);
   dcl-ds node likeds(tree_node_int_t) based(nodePtr);
-  dcl-ds timeout likeds(timeout_t); // based(node.value);
+  dcl-ds timeout likeds(timeout_t) based(node.value);
      
   clear socket_address_inet;
   socket_address_inet.family = AF_INET;
@@ -147,8 +145,7 @@ dcl-proc stomp_open export;
   // set timeout
   if (tree_rb_int_containsKey(header.options : STOMP_OPTION_TIMEOUT));
     nodePtr = tree_rb_int_get(header.options : STOMP_OPTION_TIMEOUT);
-    clear timeout;
-    timeout.seconds = 5;
+    
     if (setsockopt(header.socket : SOL_SOCKET: SO_RCVTIMEO : %addr(timeout) : %size(timeout)) = -1);
       errPtr = errno();
       message_sendEscapeMessageToCaller(
