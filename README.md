@@ -128,6 +128,23 @@ This software package has the following dependencies:
 - [Reflection](https://bitbucket.org/m1hael/reflection)
 - [Log4RPG](http://tools400.de/Deutsch/Freeware/Service-Pgme/Log4rpg/log4rpg.html)
 
+## Installation
+
+For standard installation the setup script can be executed as is. This will 
+build the service program in the library *OSSILE*. If you want to build the
+service program in any other library export the library name in the variable
+`TARGET_LIB` like this
+
+    export TARGET_LIB=MIHAEL
+
+*before* executing the *setup* script.
+
+As this service program relies on other libraries the place for the copybook
+needs to be stated. This is also be the place where the copybooks of the
+STOMP serviceprogram will be copied to.
+
+    export INCDIR=/usr/local/include/
+
 ## Documentation
 
 The API documentation is be available at [ILEDocs](http://iledocs.rpgnextgen.com) 
