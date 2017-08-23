@@ -57,32 +57,26 @@
 
          dsply 'network connection established';
 
-         if (stomp_command_connect(client : 'user' : 'pass'));
+         stomp_command_connect(client : 'user' : 'pass');
 
-           stomp_command_subscribe(client : '/queue/retailprice');
+         stomp_command_subscribe(client : '/queue/retailprice');
 
-           dow (running);
-
-             frame = stomp_receiveFrame(client);
-
-             // check if a frame was received
-             if (frame <> *null);
-               ptr = stomp_frame_toString(frame);
-               string = %str(ptr);
-               stomp_frame_finalize(frame);
-               msg_sendProgramMessage(string);
-             endif;
-
-             count += 1;
-             if (count = 3);
-               running = *off;
-             endif;
-           enddo;
-
-           stomp_command_disconnect(client);
-         else;
-           dsply 'could not connect with the CONNECT command';
-         endif;
+         dow (running);
+            frame = stomp_receiveFrame(client);
+            // check if a frame was received
+           if (frame <> *null);
+             ptr = stomp_frame_toString(frame);
+             string = %str(ptr);
+             stomp_frame_finalize(frame);
+             msg_sendProgramMessage(string);
+           endif;
+            count += 1;
+           if (count = 3);
+             running = *off;
+           endif;
+         enddo;
+         
+         stomp_command_disconnect(client);
 
          stomp_close(client);
          stomp_finalize(client);

@@ -35,6 +35,7 @@ ctl-opt nomain;
 /include 'socket_h.rpgle'
 /include QLOG4RPG,PLOG4RPG
 /include 'libc_h.rpgle'
+/include 'message/message_h.rpgle'
 
 
 //
@@ -55,7 +56,7 @@ dcl-c CRLF x'0d25';
 //
 
 dcl-proc stomp_command_connect export;
-  dcl-pi *N ind;
+  dcl-pi *N;
     conn pointer const;
     user varchar(100) const options(*nopass);
     pass varchar(100) const options(*nopass);
@@ -63,11 +64,11 @@ dcl-proc stomp_command_connect export;
   
   dcl-s frame pointer;
   dcl-s returnFrame pointer;
-  dcl-s retVal ind;
   dcl-s alreadyConnected char(20);
   dcl-s alreadyConnPtr pointer;
   dcl-s rc int(10);
   dcl-s optionPtr pointer;
+  dcl-s abnormallyEnded ind;
 
   if (logger = *null);
     logger = Logger_getLogger('rpgnextgen.stomp.command');
@@ -95,33 +96,35 @@ dcl-proc stomp_command_connect export;
   
   returnFrame = stomp_receiveFrame(conn);
   if (returnFrame = *null);
-    retVal = *off;
+    message_sendEscapeMessageToCaller('No returning frame on connect.');
   else;
   
     if (stomp_frame_getCommand(returnFrame) = 'CONNECTED');
-      retVal = *on;
+    
       if (stomp_frame_containsHeader(returnFrame : 'session'));
-        stomp_setSessionId(conn :
-            stomp_frame_getHeaderValue(returnFrame : 'session'));
+        stomp_setSessionId(conn : stomp_frame_getHeaderValue(returnFrame : 'session'));
       endif;
   
     // TODO replace this hack (CONNECT on already connected session)
     elseif (stomp_frame_getCommand(returnFrame) = 'ERROR');
       alreadyConnected = 'already connected' + x'00';
-      alreadyConnPtr = strstr(stomp_frame_getBody(returnFrame) :
-                  %addr(alreadyConnected));
-      if (alreadyConnPtr <> *null);
-        retVal = *on;
+      alreadyConnPtr = strstr(stomp_frame_getBody(returnFrame) : %addr(alreadyConnected));
+      if (alreadyConnPtr = *null);
+        message_sendEscapeMessageToCaller('Error on connecting to messaging system.' +
+          %str(stomp_frame_getBody(returnFrame)));
+      else;
+        Logger_info(logger : 'Received ERROR frame on connecting to an already connected system.');
       endif;
   
     endif;
-  
-    stomp_frame_finalize(returnFrame);
   endif;
   
   Logger_info(logger : 'connected to messaging system');
   
-  return retVal;
+  on-exit abnormallyEnded;
+    if (returnFrame <> *null);
+      stomp_frame_finalize(returnFrame);
+    endif;
 end-proc;
 
 

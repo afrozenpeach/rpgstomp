@@ -49,15 +49,15 @@
 // queried with <em>stomp_getSessionId()</em>.
 // <br><br>
 // Any registered extension will be called on frame creation.
+// <br><br>
+// If the client cannot connect an escape message will be sent.
 //
 // \param Client
 // \param Username
 // \param Password
 //
-// \return *on = connected <br>
-//         *off = not connected
 ///
-dcl-pr stomp_command_connect ind extproc('stomp_command_connect');
+dcl-pr stomp_command_connect extproc('stomp_command_connect');
   conn pointer const;
   user varchar(100) const options(*nopass);
   pass varchar(100) const options(*nopass);

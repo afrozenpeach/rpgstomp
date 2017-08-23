@@ -40,22 +40,19 @@ dcl-proc main;
   
     dsply 'network connection established';
   
-    if (stomp_command_connect(client : 'user' : 'pass'));
+    stomp_command_connect(client : 'user' : 'pass');
   
-      dsp = 'Session: ' + stomp_getSessionId(client);
-      dsply dsp;
+    dsp = 'Session: ' + stomp_getSessionId(client);
+    dsply dsp;
   
-      stomp_command_send(
+    stomp_command_send(
                   client :
                   '/topic/retailprice' :
                   '{ "id" : 5500 , ' +
                   '"price" : 1.23 , ' +
                   '"time" : ' + %char(%timestamp : *ISO0) + ' }');
   
-      stomp_command_disconnect(client);
-    else;
-      dsply 'could not connect with the CONNECT command';
-    endif;
+    stomp_command_disconnect(client);
   
     dsply %trimr('Number of open receipts: ' + %char(stomp_getNumberOfOpenReceipts(client)));
   

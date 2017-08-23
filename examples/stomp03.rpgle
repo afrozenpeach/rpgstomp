@@ -31,28 +31,26 @@ dcl-proc main;
 
     dsply 'network connection established';
 
-    if (stomp_command_connect(client : 'user' : 'pass'));
-
-       dsp = 'Session: ' + stomp_getSessionId(client);
-       dsply dsp;
-        stomp_command_send(client :
+    stomp_command_connect(client : 'user' : 'pass');
+    
+    dsp = 'Session: ' + stomp_getSessionId(client);
+    dsply dsp;
+    
+    stomp_command_send(client :
                   '/queue/retailprice' :
                   '{ "id" : 5500 , ' +
                   '"price" : 1.23 , ' +
                   '"time" : ' + %char(%timestamp : *ISO0) + ' }');
-        stomp_command_disconnect(client);
-     else;
-       dsply 'could not connect with the CONNECT command';
-     endif;
+    stomp_command_disconnect(client);
 
-     stomp_close(client);
-     stomp_finalize(client);
+    stomp_close(client);
+    stomp_finalize(client);
      
-     dsply 'connection closed';
+    dsply 'connection closed';
      
-     on-error;
-       dsply 'error occured';
-       stomp_finalize(client);
-       dsply 'connection closed';
-   endmon;
+    on-error;
+      dsply 'error occured';
+      stomp_finalize(client);
+      dsply 'connection closed';
+  endmon;
 end-proc;

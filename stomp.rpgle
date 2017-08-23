@@ -46,6 +46,8 @@ dcl-pr ackMessage;
   frame pointer const;
 end-pr;
 
+/define SOCKET_UNIX98
+
 /include 'stomp_h.rpgle'
 /include 'stompframe_h.rpgle'
 /include 'stomputil_h.rpgle'
@@ -126,7 +128,9 @@ dcl-proc stomp_open export;
   dcl-ds header likeds(stomp_header_t) based(conn);
   dcl-ds socket_address_inet likeds(socket_address_inet_t);
   dcl-s c_err int(10) based(errPtr);
-
+  dcl-ds node likeds(tree_node_int_t) based(nodePtr);
+  dcl-ds timeout likeds(timeout_t); // based(node.value);
+     
   clear socket_address_inet;
   socket_address_inet.family = AF_INET;
   socket_address_inet.addr = inet_addr(%trim(header.host));
@@ -140,6 +144,18 @@ dcl-proc stomp_open export;
         'Could not open socket connection. ' + %char(c_err) + ': ' + %str(strerror(c_err)));
   endif;
   
+  // set timeout
+  if (tree_rb_int_containsKey(header.options : STOMP_OPTION_TIMEOUT));
+    nodePtr = tree_rb_int_get(header.options : STOMP_OPTION_TIMEOUT);
+    clear timeout;
+    timeout.seconds = 5;
+    if (setsockopt(header.socket : SOL_SOCKET: SO_RCVTIMEO : %addr(timeout) : %size(timeout)) = -1);
+      errPtr = errno();
+      message_sendEscapeMessageToCaller(
+        'Could not set socket timeout. ' + %char(c_err) + ': ' + %str(strerror(c_err)));
+    endif;
+  endif;
+       
   header.connected = *on;
   
   Logger_info(logger : 'socket connection established to ' +
@@ -297,8 +313,6 @@ dcl-proc stomp_sendFrame export;
   dcl-s ptr pointer;
   dcl-s backupPtr pointer;
   dcl-s rc int(10);
-  dcl-ds node likeds(tree_node_int_t) based(nodePtr);
-  dcl-ds timeout likeds(timeout_t) inz;
   dcl-s receiptid like(stomp_receiptid_t);
 
   Logger_info(logger : 'sending ' + stomp_frame_getCommand(frame) + ' frame');
@@ -314,16 +328,10 @@ dcl-proc stomp_sendFrame export;
   ptr = stomp_frame_toString(frame);
   backupPtr = ptr;
   
-  // set timeout
-  if (tree_rb_int_containsKey(header.options : STOMP_OPTION_TIMEOUT));
-    nodePtr = tree_rb_int_get(header.options : STOMP_OPTION_TIMEOUT);
-    memcpy(%addr(timeout) : node.value : %size(timeout));
-  endif;
-  
   length = strlen(ptr);
   translateToAscii(ptr : length);
   ptr = backupPtr;
-  rc = send(header.socket : ptr : length + 1 : 0); // TODO use timeout
+  rc = send(header.socket : ptr : length + 1 : 0);
   
   Logger_debug(logger : 'sent ' + %char(rc) + ' bytes');
   
@@ -345,8 +353,6 @@ dcl-proc stomp_receiveFrame export;
   dcl-s ptr pointer;
   dcl-s backupPtr pointer;
   dcl-s rc int(10);
-  dcl-ds node likeds(tree_node_int_t) based(nodePtr);
-  dcl-ds timeout likeds(timeout_t) inz;
   dcl-s returnFrame pointer;
   dcl-s receipt char(50);
   dcl-s bufferedFrame pointer based(tmpPtr);
@@ -365,13 +371,7 @@ dcl-proc stomp_receiveFrame export;
   ptr = %alloc(65535);
   length = 65535;
   
-  // set timeout
-  if (tree_rb_int_containsKey(header.options : STOMP_OPTION_TIMEOUT));
-    nodePtr = tree_rb_int_get(header.options : STOMP_OPTION_TIMEOUT);
-    memcpy(%addr(timeout) : node.value : %size(timeout));
-  endif;
-  
-  rc = recv(header.socket : ptr : length : 0); // TODO use timeout
+  rc = recv(header.socket : ptr : length : 0);
   if (rc = -1);
     Logger_debug(logger : 'no data received from connection');
   else;
@@ -380,11 +380,11 @@ dcl-proc stomp_receiveFrame export;
     translateFromAscii(ptr : length);
     ptr = backupPtr;
     returnFrame = stomp_frame_parse(ptr);
+    
+    Logger_debug(logger : 'received ' + stomp_frame_getCommand(returnFrame) + ' frame');
+  
+    ackMessage(conn : returnFrame);
   endif;
-  
-  Logger_debug(logger : 'received ' + stomp_frame_getCommand(returnFrame) + ' frame');
-  
-  ackMessage(conn : returnFrame);
   
   dealloc(n) backupPtr;
 
@@ -562,25 +562,17 @@ dcl-proc waitForReceipts;
   dcl-s backupPtr pointer;
   dcl-s length int(10);
   dcl-s frame pointer;
-  dcl-ds timeout likeds(timeout_t) inz;
-  dcl-ds node likeds(tree_node_int_t) based(nodePtr);
   dcl-s receiptId like(stomp_receiptid_t);
   dcl-s x int(10);
 
   Logger_debug(logger : 'waiting for receipts ...');
-  
-  // set timeout
-  if (tree_rb_int_containsKey(header.options : STOMP_OPTION_TIMEOUT));
-    nodePtr = tree_rb_int_get(header.options : STOMP_OPTION_TIMEOUT);
-    memcpy(%addr(timeout) : node.value : %size(timeout));
-  endif;
   
   length = 65535;
   ptr = %alloc(length);
   
   dow (not list_isEmpty(header.openReceipts));
   
-    rc = recv(header.socket : ptr : length : 0); // TODO use timeout
+    rc = recv(header.socket : ptr : length : 0);
   
     if (rc = -1);
       Logger_debug(logger : 'no data received from connection');

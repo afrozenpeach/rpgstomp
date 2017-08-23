@@ -170,7 +170,7 @@ end-pr;
 ///
 // Set timeout
 //
-// Sets the timeout for the socket operations.
+// Sets the timeout for the socket operations (receive).
 //
 // \param Client
 // \param Timeout (in ms)

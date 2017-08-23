@@ -1,33 +1,58 @@
       /if not defined(SOCKET_H)
       /define SOCKET_H
 
+      /if defined(SOCKET_UNIX98)
+     D socket          PR            10I 0 extproc('qso_socket98')
+      /else
      D socket          PR            10I 0 extproc('socket')
+      /endif
      D  addr_family                  10I 0 value
      D  type                         10I 0 value
      D  protocol                     10I 0 value
 
+      /if defined(SOCKET_UNIX98)
+     D connect         PR            10I 0 extproc('qso_connect98')
+      /else
      D connect         PR            10I 0 extproc('connect')
+      /endif
      D  sock_desc                    10I 0 value
      D  dest_addr                      *   value
      D  addr_len                     10I 0 value
 
+      /if defined(SOCKET_UNIX98)
+     D send            PR            10I 0 extproc('qso_send98')
+      /else
      D send            PR            10I 0 extproc('send')
+      /endif
      D   sock_desc                   10I 0 value
      D   buffer                        *   value
      D   buffer_len                  10I 0 value
      D   flags                       10I 0 value
 
+      /if defined(SOCKET_UNIX98)
+     D recv            PR            10I 0 extProc('qso_recv98')
+      /else
      D recv            PR            10I 0 extProc('recv')
+      /endif
      D   sock_desc                   10I 0 value
      D   buffer                        *   value
      D   buffer_len                  10I 0 value
      D   flags                       10I 0 value
 
-      /if not defined(CLOSE_PROTOTYPE)
-      /define CLOSE_PROTOTYPE
+      /if defined(SOCKET_UNIX98)
+     D setsockopt      PR            10I 0 extproc('qso_setsockopt98')
+      /else
+     D setsockopt      PR            10I 0 extproc('setsockopt')  
+      /endif
+     D   socket_desc                 10I 0 value                  
+     D   level                       10I 0 value                  
+     D   option_name                 10I 0 value                  
+     D   option_value                  *   value                  
+     D   option_length...
+     D                               10I 0 value
+         
      D close           PR            10I 0 extproc('close')
      D  sock_desc                    10I 0 value
-      /endif
 
      D select          PR            10I 0 extproc('select')
      D   max_desc                    10I 0 value
@@ -71,11 +96,16 @@
 
      D socket_address_inet_t...
      D                 DS                  qualified template
+      /if defined(SOCKET_UNIX98)
+     D   sa_len                       3U 0
+     D   family                       3U 0
+      /else
      D   family                       5I 0
+      /endif
      D   port                         5U 0
      D   addr                        10U 0
      D   zero                         8A
-
+     
      D servent_t       DS                  qualified template
      D   s_name                        *
      D   s_aliases                     *
