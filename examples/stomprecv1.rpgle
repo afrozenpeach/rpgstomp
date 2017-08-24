@@ -23,6 +23,7 @@
       *-------------------------------------------------------------------------
       /include QLOG4RPG,PLOG4RPG
       /include 'stomp/stomp_h.rpgle'
+      /include 'message/message_h.rpgle'
 
 
       *-------------------------------------------------------------------------
@@ -68,7 +69,7 @@
              ptr = stomp_frame_toString(frame);
              string = %str(ptr);
              stomp_frame_finalize(frame);
-             msg_sendProgramMessage(string);
+             message_sendInfoMessage(string);
            endif;
             count += 1;
            if (count = 3);
