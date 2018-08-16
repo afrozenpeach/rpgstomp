@@ -220,6 +220,22 @@ dcl-proc stomp_setTimeout export;
 end-proc;
 
 
+dcl-proc stomp_setVirtualHost export;
+  dcl-pi *N;
+    conn pointer const;
+    pVirtualHost varchar(100) const;
+  end-pi;
+  
+  dcl-ds header likeds(stomp_header_t) based(conn);
+  dcl-s virtualHost varchar(100);
+
+  virtualHost = pVirtualHost;
+  tree_rb_int_put(header.options : STOMP_OPTION_VIRTUAL_HOST :
+                  %addr(virtualHost : *DATA) : %len(virtualHost));
+  Logger_debug(logger : 'set client id: ' + pVirtualHost);
+end-proc;
+
+
 dcl-proc stomp_setClientId export;
   dcl-pi *N;
     conn pointer const;
