@@ -232,7 +232,7 @@ dcl-proc stomp_setVirtualHost export;
   virtualHost = pVirtualHost;
   tree_rb_int_put(header.options : STOMP_OPTION_VIRTUAL_HOST :
                   %addr(virtualHost : *DATA) : %len(virtualHost));
-  Logger_debug(logger : 'set client id: ' + pVirtualHost);
+  Logger_debug(logger : 'set virtual host: ' + pVirtualHost);
 end-proc;
 
 
