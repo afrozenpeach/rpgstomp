@@ -87,11 +87,6 @@ dcl-proc stomp_command_connect export;
     stomp_frame_setHeader(frame : 'client-id' :  %str(optionPtr));
   endif;
   
-  if (stomp_hasOption(conn : STOMP_OPTION_VIRTUAL_HOST));
-    optionPtr = stomp_getOptionValue(conn : STOMP_OPTION_VIRTUAL_HOST);
-    stomp_frame_setHeader(frame : 'host' : %str(optionPtr));
-  endif;
-  
   if (stomp_getExtension(conn) <> *null);
     stomp_ext_connect(stomp_getExtension(conn) : conn : frame : user:pass);
   endif;
