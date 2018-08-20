@@ -429,13 +429,13 @@ dcl-s stomp_receiptid_t varchar(50) template;
 dcl-c STOMP_ACK_MODE_AUTO 'auto';
 dcl-c STOMP_ACK_MODE_CLIENT 'client';
 dcl-c STOMP_OPTION_TIMEOUT 1;
-dcl-c STOMP_OPTION_VIRTUAL_HOST 'host';
 dcl-c STOMP_OPTION_CLIENT_ID 2;
 dcl-c STOMP_OPTION_ACK 3;
 dcl-c STOMP_OPTION_PERSISTENT 4;
 dcl-c STOMP_OPTION_DURABLE_SUBSCRIBER 5;
 dcl-c STOMP_OPTION_CONTENT_TYPE 6;
 dcl-c STOMP_OPTION_CHARSET 7;
+dcl-c STOMP_OPTION_VIRTUAL_HOST 8;
 
 
 /include 'stompframe_h.rpgle'
